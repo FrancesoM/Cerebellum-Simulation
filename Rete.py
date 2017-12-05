@@ -54,13 +54,14 @@ neu_Golgi = neu[(N_Granular:]
  
 nest.SetStatus(neu_Granular, {'a': 0.02,'b': 0.2,'c': -65.0, 'd': 8.0,'V_th': V_th_Granular,})
 nest.SetStatus(neu_Golgi, {'a': 0.1,'b': 0.2,'c': -65.0, 'd': 2.0,'V_th': V_th_Golgi})
+#da mettere a variare i diversi input, mentre rimane invariato il fatto di avere bursting o spike o altro.
+#per i valori che possiamo recuperare da fisiologia li mettiamo fissi (con il valore pari al valore della grandezza con le stess eunità di misura)
  
  
 neu_Glomeruli=nest.Create('parrot',N_Glomeruli)
  
 # Neuroni esterni
-noise = nest.Create('poisson_generator',150,{'rate': p_rate})
- 
+noise = nest.Create('poisson_generator',150,{'rate': p_rate}) #il p-rate va bene che sia 6, da controllare (da variare nel range)
  
  
 #Spike detector
@@ -90,3 +91,6 @@ nest.Connect(m,neu)
  
  
 nest.Simulate(600.0)
+
+#rusterplot alla fine di ogni simulazione, come input poisson sia segnale che rumore. usiamo un poisson per tutti i neuroni a diverse frequenze.
+#siamo felici quando dando un input a una frequenza tra 8-10 Hz le granular hanno andamento oscialltorio a 6 Hz di risonanza.
