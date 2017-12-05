@@ -29,16 +29,22 @@ N_Glomeruli= 3000
 
 N_neurons = N_Golgi+N_Granular+N_Glomeruli
 
-# dati da scrivere
-C_Granular = N_Granular/20        # Number of synapses per neuron
-C_Golgi = N_Golgi/20
-C_Glomeruli = N_Glomeruli/20
+#---------------rapporti di convergenza----------------
+C_mossy_Glo = 20
+C_Glo_Gra = 4
+C_Glo_Gol = 70
+C_Gol_Gol = 400
+C_Gol_Gra = 4
+C_Gra_Parallel = 1000
+#------------------------------------------------------
 
+#---------------conduttanze----------------------------
 J_E = 0.1       # Peak of alpha function for synapses
 J_I = -g*J_E
 nu_ex = eta*V_th/(J_E*C_E)
 #p_rate = 1000.0*nu_ex*C_E      # From spk/ms to spk/s
 p_rate = 6 #perchè la frequenza di stimolazione è 6Hz
+#------------------------------------------------------
  
  
 nest.SetKernelStatus({'print_time': True})
@@ -52,7 +58,8 @@ neu_Granular = neu[:N_Granular]
 neu_Golgi = neu[(N_Granular:]
 
  
-nest.SetStatus(neu_Granular, {'a': 0.02,'b': 0.2,'c': -65.0, 'd': 8.0,'V_th': V_th_Granular,})
+#nest.SetStatus(neu_Granular, {'a': 0.02,'b': 0.2,'c': -65.0, 'd': 8.0,'V_th': V_th_Granular,})
+nest.SetStatus(neu_Granular, {'a': 0.1,'b': 0.2,'c': -65.0, 'd': 2.0,'V_th': V_th_Granular})
 nest.SetStatus(neu_Golgi, {'a': 0.1,'b': 0.2,'c': -65.0, 'd': 2.0,'V_th': V_th_Golgi})
 #da mettere a variare i diversi input, mentre rimane invariato il fatto di avere bursting o spike o altro.
 #per i valori che possiamo recuperare da fisiologia li mettiamo fissi (con il valore pari al valore della grandezza con le stess eunità di misura)
@@ -61,8 +68,8 @@ nest.SetStatus(neu_Golgi, {'a': 0.1,'b': 0.2,'c': -65.0, 'd': 2.0,'V_th': V_th_G
 neu_Glomeruli=nest.Create('parrot',N_Glomeruli)
  
 # Neuroni esterni
-noise = nest.Create('poisson_generator',150,{'rate': p_rate}) #il p-rate va bene che sia 6, da controllare (da variare nel range)
- 
+mossy = nest.Create('poisson_generator',150,{'rate': p_rate}) #il p-rate va bene che sia 6, da controllare (da variare nel range)
+#le mossy fibers le modellizziamo come un generatore di poisson (quindi le mossy sono poisson)
  
 #Spike detector
 spk = nest.Create('spike_detector', 101, params = {"to_file": True,
@@ -76,21 +83,24 @@ m = nest.Create("multimeter",
                           "withgid": True,
                           "to_file": True,
                           "label": "multimeter"})
- 
+
 # Connections
 nest.CopyModel('static_synapse_hom_w',
         'excitatory', {'weight': J_E, 'delay': delay})
-nest.Connect(neuE,neu,{'rule':'fixed_indegree','indegree': C_E},'excitatory')
 nest.CopyModel('static_synapse_hom_w',
         'inhibitory', {'weight': J_I, 'delay': delay})
-nest.Connect(neuI,neu,{'rule':'fixed_indegree','indegree': C_I},'inhibitory')
+
+nest.Connect(mossy,neu_Glomeruli)
+nest.Connect(neu_Glomeruli,neu_Granular,{'rule':'fixed_indegree','indegree': C_Glo_Gra},'excitatory')
+nest.Connect(neu_Golgi,neu_Granular,{'rule':'fixed_indegree','indegree': C_Gol_Gra},'inhibitory')
+nest.Connect(neu_Golgi,neu_Golgi,{'rule':'fixed_indegree','indegree': C_Gol_Gol},'inhibitory')
+nest.Connect(neu_Glomeruli,neu_Golgi,{'rule':'fixed_indegree','indegree': C_Glo_Gol},'excitatory')
+nest.Connect(neu_Granular,spk)
+
+#nest.Connect(spk,m)
  
-nest.Connect(noise, neu, syn_spec = 'excitatory')
-nest.Connect(neu,spk)
-nest.Connect(m,neu)
- 
- 
-nest.Simulate(600.0)
+nest.Simulate(1000.0)
+nest.ruster_plot.from_device(spk, hist=True)
 
 #rusterplot alla fine di ogni simulazione, come input poisson sia segnale che rumore. usiamo un poisson per tutti i neuroni a diverse frequenze.
 #siamo felici quando dando un input a una frequenza tra 8-10 Hz le granular hanno andamento oscialltorio a 6 Hz di risonanza.
