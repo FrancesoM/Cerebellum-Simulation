@@ -44,21 +44,21 @@ C_Gra_Parallel = 1000
 #---------------conduttanze----------------------------
 J_E = 0.1       # Peak of alpha function for synapses
 J_I = -g*J_E
-nu_ex = eta*V_th/(J_E*C_E)
+#nu_ex = eta*V_th/(J_E*C_E)
 #p_rate = 1000.0*nu_ex*C_E      # From spk/ms to spk/s
-p_rate = 6 #perchè la frequenza di stimolazione è 6Hz
+p_rate = 6.0 #perchè la frequenza di stimolazione è 6Hz
 #------------------------------------------------------
  
  
 nest.SetKernelStatus({'print_time': True})
 nest.SetKernelStatus({"overwrite_files": True,              # Parameters for writing on files
                       "data_path": my_path,
-                      "data_prefix": "reteGranular_"})
+                      "data_prefix": "reteGranular_prova_"})
  
 # Neuroni rete
 neu = nest.Create('izhikevich', (N_neurons-N_Glomeruli))
 neu_Granular = neu[:N_Granular]
-neu_Golgi = neu[(N_Granular:]
+neu_Golgi = neu[N_Granular:]
 
  
 #nest.SetStatus(neu_Granular, {'a': 0.02,'b': 0.2,'c': -65.0, 'd': 8.0,'V_th': V_th_Granular,})
@@ -68,7 +68,7 @@ nest.SetStatus(neu_Golgi, {'a': 0.1,'b': 0.2,'c': -65.0, 'd': 2.0,'V_th': V_th_G
 #per i valori che possiamo recuperare da fisiologia li mettiamo fissi (con il valore pari al valore della grandezza con le stess eunità di misura)
  
  
-neu_Glomeruli=nest.Create('parrot',N_Glomeruli)
+neu_Glomeruli=nest.Create('parrot_neuron',N_Glomeruli)
  
 # Neuroni esterni
 mossy = nest.Create('poisson_generator',150,{'rate': p_rate}) #il p-rate va bene che sia 6, da controllare (da variare nel range)
@@ -103,7 +103,7 @@ nest.Connect(neu_Granular,spk)
 #nest.Connect(spk,m)
  
 nest.Simulate(1000.0)
-nest.ruster_plot.from_device(spk, hist=True)
+nest.raster_plot.from_device(spk, hist=True)
 
-#rusterplot alla fine di ogni simulazione, come input poisson sia segnale che rumore. usiamo un poisson per tutti i neuroni a diverse frequenze.
+#rasterplot alla fine di ogni simulazione, come input poisson sia segnale che rumore. usiamo un poisson per tutti i neuroni a diverse frequenze.
 #siamo felici quando dando un input a una frequenza tra 8-10 Hz le granular hanno andamento oscialltorio a 6 Hz di risonanza.
