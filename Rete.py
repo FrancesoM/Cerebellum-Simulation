@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import nest
 import nest.voltage_trace
 import nest.raster_plot
