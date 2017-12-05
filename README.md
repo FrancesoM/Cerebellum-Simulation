@@ -8,7 +8,7 @@ Such kind of simulations are used to study the overall behaviour of the neural n
 
 ## Useful Resources
 
-<a href="http://nest-simulator.org/documentation/"> Examples from the official NEST GitHub repo </a>
+<a href="http://nest-simulator.org/documentation/"> Examples from the official NEST GitHub repo </a> <br>
 <a href="http://www.nest-simulator.org/wp-content/uploads/2015/02/NEST_by_Example.pdf"> NEST by example </a>
 
 ## Tests
