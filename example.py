@@ -5,7 +5,79 @@ import nest.raster_plot
 import pylab as pl
 import numpy as np
 from matplotlib.pylab import *
- 
+
+"""
+
+Prototype of common nest functions:
+
+	nest.Create ( 	/model - literal naming the modeltype (entry in modeldict)
+			/n - the desired number of nodes
+			/params - parameters for the newly created node(s)
+			/gid - gid of last created node
+
+			Description
+
+			Create generates n new network objects of the supplied model
+			type. If n is not given a single node is created. The objects
+			are added as children of the current working node. params is a
+			dictsionary with parameters for the new nodes. 
+
+			Returns
+			
+			Array of integeres which represents the neurons ID
+
+	nest.CopyModel(	/model - literal naming an existing model
+			/new_model - literal giving the name of the copy to create must not
+				exist in modeldict or synapsedict before
+			/param_dict - parameters to set in the new_model
+			
+			Description
+
+			A copy of model is created and registered in modeldict or synapsedict
+			under the name new_model. If a parameter dictionary is given the parameters
+			are set in new_model.
+			Warning: It is impossible to unload modules after use of CopyModel. 
+			
+	nest.Connect(	source integer - the GID of the source
+			target integer - the GID of the target
+			weight double - the weight of the connection
+			delay double - the delay of the connection
+			params dict - dictionary with synapse parameters
+
+			sources array/intvector/gidcollection - the GIDs of the sources
+			targets array/intvector/gidcollection - the GIDs of the targets
+			syn_model literal - the name of the synapse model see synapsedict
+			syn_spec dict - dictionary with synapse model specification (see Options)
+			conn_rule literal - the name of the connection rule see connruledict
+			conn_spec dict - dictionary with connectivity specification (see Options)
+
+
+			Description
+
+			Connects sources to targets according to the given connectivity
+			specification conn_spec. Some connection rules impose requirements.
+			E.g. /one_to_one requires that sources and targets have the same
+			number of elements. Others may have additional parameters
+			e.g. connection probability /p for /pairwise_binomial.
+
+			The variants with two global ids as arguments implicitly connect
+			the two neurons using the all_to_all rule. If given weight delay
+			syn_model and params are used for the connection.
+
+			The variants with only literal arguments /conn_rule or /syn_model
+			are shorthand for the corresponding calls with a connectivity or
+			synapse specification dictionaries as explained in the Options
+			section. The literals are expanded to << /rule /conn_rule >> and
+			<< /model /syn_model >> respectively.
+
+			Parameters for connectivity rules must have fixed values.
+
+			Parameters for synapses may be fixed single values and random deviate
+			specifications. 
+
+
+"""
+
  
 g = 7.1
 eta = 45.0
