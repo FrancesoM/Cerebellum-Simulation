@@ -6,6 +6,11 @@ The Cerebellum is the part of our brain that is in charge of coordinating, predi
 
 Such kind of simulations are used to study the overall behaviour of the neural net and thanks to their relative simplicity can be simulated in a fair amount of time. They offer a high level of parallelism and a proper architecture may use them in real time to control robotic parts, exploiting the inner ability of the cerebellum to control and learn movements.
 
+## Useful Resources
+
+<a href="http://nest-simulator.org/documentation/"> Examples from the official NEST GitHub repo </a>
+<a href="http://www.nest-simulator.org/wp-content/uploads/2015/02/NEST_by_Example.pdf"> NEST by example </a>
+
 ## Tests
 
 WIP
