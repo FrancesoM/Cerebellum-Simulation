@@ -1,9 +1,9 @@
-import auxiliary_functions as aux
 import nest
 import nest.voltage_trace
 import nest.raster_plot
 import pylab as pl
 import numpy as np
+import os
 from matplotlib.pylab import *
 
 """
@@ -77,6 +77,15 @@ Prototype of common nest functions:
 
 
 """
+#print the names of the models we need
+print " ---------------- Models' names----------------------------------"
+for s in nest.Models():
+	if( (s.find("parrot") == 0) or (s.find("izhikevich") == 0)  ):
+		print s
+print "-----------------------------------------------------------------"
+
+#Get path of the working directory
+my_path = os.getcwd()
 
  
 g = 7.1
@@ -98,7 +107,7 @@ p_rate = 1000.0*eta
  
 nest.SetKernelStatus({'print_time': True})
 nest.SetKernelStatus({"overwrite_files": True,              # Parameters for writing on files
-                      "data_path": "/home/realnet/workspace/nest-simulator",
+                      "data_path": my_path,
                       "data_prefix": "reteGranular_"})
  
 # Neuroni rete
