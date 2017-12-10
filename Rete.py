@@ -10,6 +10,7 @@ import os
 from matplotlib.pylab import *
 
 
+
 #print the names of the models we need
 print " ---------------- Models' names----------------------------------"
 for s in nest.Models():
@@ -26,9 +27,9 @@ eta = 45.0
 delay = 1.5
 V_th_Granular = -41.0
 V_th_Golgi = -55.0     # [mV]
-N_Granular = 40000     # [Sahasranamam et al, NatSciRep, 2016]; all RS
-N_Golgi = 90 
-N_Glomeruli= 3000  
+N_Granular = 20000     # [Sahasranamam et al, NatSciRep, 2016]; all RS
+N_Golgi = 45
+N_Glomeruli= 1500  
 
 N_neurons = N_Golgi+N_Granular+N_Glomeruli
 
@@ -69,23 +70,33 @@ nest.SetStatus(neu_Golgi, {'a': 0.1,'b': 0.2,'c': -65.0, 'd': 2.0,'V_th': V_th_G
  
  
 neu_Glomeruli=nest.Create('parrot_neuron',N_Glomeruli)
+
+neu_TOT = neu_Glomeruli+neu
  
 # Neuroni esterni
-mossy = nest.Create('poisson_generator',150,{'rate': p_rate}) #il p-rate va bene che sia 6, da controllare (da variare nel range)
+mossy = nest.Create('poisson_generator',75,{'rate': p_rate}) #il p-rate va bene che sia 6, da controllare (da variare nel range)
 #le mossy fibers le modellizziamo come un generatore di poisson (quindi le mossy sono poisson)
  
 #Spike detector
-spk = nest.Create('spike_detector', 101, params = {"to_file": True,
+spk = nest.Create('spike_detector', 51, params = {"to_file": True,
             "withgid": True,
             "label": "spikes"})
  
- 
-m = nest.Create("multimeter",
-                params = {"interval": 0.1,
-                         "record_from": ["V_m"],
+#
+m_Golgi = nest.Create("multimeter",
+                params = {"interval": 1.0,
+                         "record_from": ['V_m'],
                           "withgid": True,
                           "to_file": True,
-                          "label": "multimeter"})
+                          "label": "multimeter_Golgi"})
+
+m_Granular = nest.Create("multimeter",
+                params = {"interval": 1.0,
+                         "record_from": ['V_m'],
+                          "withgid": True,
+                          "to_file": True,
+                          "label": "multimeter_Granular"})
+
 
 # Connections
 nest.CopyModel('static_synapse_hom_w',
@@ -99,11 +110,15 @@ nest.Connect(neu_Golgi,neu_Granular,{'rule':'fixed_indegree','indegree': C_Gol_G
 nest.Connect(neu_Golgi,neu_Golgi,{'rule':'fixed_indegree','indegree': C_Gol_Gol},'inhibitory')
 nest.Connect(neu_Glomeruli,neu_Golgi,{'rule':'fixed_indegree','indegree': C_Glo_Gol},'excitatory')
 nest.Connect(neu_Granular,spk)
+nest.Connect(m_Golgi,neu_Golgi)
+nest.Connect(m_Granular,neu_Granular)
 
 #nest.Connect(spk,m)
  
-nest.Simulate(1000.0)
-nest.raster_plot.from_device(spk, hist=True)
+nest.Simulate(600.0)
+try: nest.raster_plot.from_device(spk, hist=True)
+except nest.NESTError as err:
+	print err
 
 #rasterplot alla fine di ogni simulazione, come input poisson sia segnale che rumore. usiamo un poisson per tutti i neuroni a diverse frequenze.
 #siamo felici quando dando un input a una frequenza tra 8-10 Hz le granular hanno andamento oscialltorio a 6 Hz di risonanza.
