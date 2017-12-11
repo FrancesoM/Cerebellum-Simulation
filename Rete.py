@@ -73,7 +73,7 @@ neu_Golgi = neu[N_Granular:]
 #nest.SetStatus(neu_Granular, {'a': 0.02,'b': 0.2,'c': -70.0, 'd': 2.0,'V_th': V_th_Granular,})
 
 # La b è il reciproco della tau di membrana, 0.17 Granular, 0.023 Golgi per similarità con LEAK INTEGRATE AND FIRE
-nest.SetStatus(neu_Golgi, {'a': 0.02,'b': 0.17,'c': -75.0, 'd': 2.0,'V_th': V_th_Golgi,'I_e':3.0})
+nest.SetStatus(neu_Golgi, {'a': 0.02,'b': 0.17,'c': -75.0, 'd': 2.0,'V_th': V_th_Golgi,'I_e':7.5})
 nest.SetStatus(neu_Granular, {'a': 0.02,'b': 0.023,'c': -70.0, 'd': 2.0,'V_th': V_th_Granular,'I_e':50.0})
 
 
@@ -121,7 +121,7 @@ m_Granular = nest.Create("multimeter",
 
 # Connections
 nest.CopyModel('static_synapse_hom_w',
-        'excitatory', {'weight': J_E, 'delay': delay})
+        'excitatory', {'weight': J_E*2, 'delay': delay})
 nest.CopyModel('static_synapse_hom_w',
         'inhibitory', {'weight': J_I, 'delay': delay})
 
@@ -152,6 +152,8 @@ except nest.NESTError as err:
 try: nest.raster_plot.from_device(spk_Granular, hist=True)
 except nest.NESTError as err:
 	print err
+
+pl.figure()
 
 events = nest.GetStatus(m_Granular)[0]['events']
 t = events['times'];
