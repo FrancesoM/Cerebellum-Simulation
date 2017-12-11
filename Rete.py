@@ -11,7 +11,7 @@ from matplotlib.pylab import *
 
 
 
-#print the names of the models we need
+#Print the names of the models we need
 print " ---------------- Models' names----------------------------------"
 for s in nest.Models():
 	if( (s.find("parrot") == 0) or (s.find("izhikevich") == 0)  ):
@@ -82,7 +82,7 @@ spk = nest.Create('spike_detector', 51, params = {"to_file": True,
             "withgid": True,
             "label": "spikes"})
  
-#
+#Multimeters
 m_Golgi = nest.Create("multimeter",
                 params = {"interval": 1.0,
                          "record_from": ['V_m'],
