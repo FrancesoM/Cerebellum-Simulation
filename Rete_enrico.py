@@ -46,7 +46,7 @@ C_Gra_Parallel = 1000
 
 #---------------conduttanze----------------------------
 J_E = 0.1       # Peak of alpha function for synapses
-J_I = -g*J_E*0.2
+J_I = -g*J_E
 #nu_ex = eta*V_th/(J_E*C_E)
 #p_rate = 1000.0*nu_ex*C_E      # From spk/ms to spk/s
 p_rate = 6.0 #perchè la frequenza di stimolazione è 6Hz
@@ -121,9 +121,9 @@ m_Granular = nest.Create("multimeter",
 
 # Connections
 nest.CopyModel('static_synapse_hom_w',
-        'excitatory', {'weight': J_E, 'delay': delay})
+        'excitatory', {'weight': J_E*3, 'delay': delay})
 nest.CopyModel('static_synapse_hom_w',
-        'inhibitory', {'weight': J_I*3, 'delay': delay})
+        'inhibitory', {'weight': J_I, 'delay': delay})
 
 nest.Connect(mossy,neu_Glomeruli)
 nest.Connect(neu_Glomeruli,neu_Granular,{'rule':'fixed_indegree','indegree': C_Glo_Gra},'excitatory')
