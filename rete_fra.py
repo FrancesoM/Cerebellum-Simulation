@@ -12,7 +12,6 @@ import sys
 from scipy.interpolate import interp1d
 from scipy import signal
 import peakf
-from tempfile import TemporaryFile
 from matplotlib.pylab import *
 
 
@@ -321,15 +320,15 @@ sw = 2*np.pi*df #fundamental freq in radiants
 
 xf = np.fft.fftfreq(N)*N*df
 
-#print xf.shape
-#print sp.shape
-
-#xf = np.linspace(0.0,N*T, int(N/2) )
+xf_trunc = xf[:N//2]
+sp_trunc = 2.0/N * np.abs(sp[:N//2])
 
 
+np.save("xf"+str(p_rate),xf_trunc)
+np.save("sp"+str(p_rate),sp_trunc)
 
 pl.figure()
-plot(xf[:N//2],2.0/N * np.abs(sp[:N//2]))
+plot(xf_trunc,sp_trunc)
 
 
 pl.show()
