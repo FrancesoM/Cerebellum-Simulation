@@ -49,7 +49,7 @@ J_E = 0.1       # Peak of alpha function for synapses
 J_I = -g*J_E
 #nu_ex = eta*V_th/(J_E*C_E)
 #p_rate = 1000.0*nu_ex*C_E      # From spk/ms to spk/s
-p_rate = 6.0 #perchè la frequenza di stimolazione è 6Hz
+p_rate = 30.0 #perchè la frequenza di stimolazione è 6Hz
 #------------------------------------------------------
  
  
